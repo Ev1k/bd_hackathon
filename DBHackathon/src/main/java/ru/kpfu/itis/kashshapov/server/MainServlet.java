@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @WebServlet(urlPatterns = "/info")
 public class MainServlet extends HttpServlet {
@@ -17,7 +18,6 @@ public class MainServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String data = getDataFromDatabase();
         resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
         resp.getWriter().write(data);
     }
 
@@ -30,7 +30,7 @@ public class MainServlet extends HttpServlet {
         String isEnabled = "";
         String installationDate = "";
 
-        String info = "[";
+        String info = "";
 
         //...получение данных
         for (SensorDto sensorDto : sensors) {
@@ -43,9 +43,9 @@ public class MainServlet extends HttpServlet {
                     "\"timestamp\": \"" + timestamp + "\", " +
                     "\"value\": \"" + value + "\", " +
                     "\"isEnabled\": \"" + isEnabled + "\", " +
-                    "\"installationDate\": \"" + installationDate + "\"}, ";
+                    "\"installationDate\": \"" + installationDate + "\"}\n";
         }
-        return info.substring(0, info.length() - 2) + "]";
+        return info.substring(0, info.length() - 1);
     }
 
     @Override
