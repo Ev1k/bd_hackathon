@@ -32,7 +32,7 @@ public class SensorStateGenerator {
 
         String state;
         if (typeName.equals("Light Control Sensor")) {
-            state = "\"{color\": " + "\"" + colors[random.nextInt(6)] + "\"" + ", \"intensity\": " + random.nextInt(1, 100) + "}";
+            state = "{\"color\": " + "\"" + colors[random.nextInt(6)] + "\"" + ", \"intensity\": " + random.nextInt(1, 100) + "}";
         } else {
             state = states[random.nextInt(1)];
         }

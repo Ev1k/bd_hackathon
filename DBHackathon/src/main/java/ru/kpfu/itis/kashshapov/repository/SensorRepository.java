@@ -23,9 +23,30 @@ public class SensorRepository implements Repository<Sensor> {
                 sensor = new Sensor(
                         resultSet.getInt("id"),
                         resultSet.getInt("sensor_type_id"),
-                        resultSet.getBoolean("id_enabled"),
+                        resultSet.getBoolean("is_enabled"),
                         resultSet.getDate("installation_date")
                 );
+            }
+            return sensor;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Sensor getLast() {
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("select * from sensors order by id desc limit 1");
+            ResultSet resultSet = statement.executeQuery();
+            Sensor sensor = null;
+            if (resultSet != null) {
+                while (resultSet.next()) {
+                    sensor = new Sensor(
+                            resultSet.getInt("id"),
+                            resultSet.getInt("sensor_type_id"),
+                            resultSet.getBoolean("is_enabled"),
+                            resultSet.getDate("installation_date")
+                    );
+                }
             }
             return sensor;
         } catch (SQLException e) {
@@ -44,7 +65,7 @@ public class SensorRepository implements Repository<Sensor> {
                     sensors.add(new Sensor(
                             resultSet.getInt("id"),
                             resultSet.getInt("sensor_type_id"),
-                            resultSet.getBoolean("id_enabled"),
+                            resultSet.getBoolean("is_enabled"),
                             resultSet.getDate("installation_date")
                     ));
                 }
@@ -86,27 +107,6 @@ public class SensorRepository implements Repository<Sensor> {
             PreparedStatement statement = connection.prepareStatement("delete from sensors where id=?");
             statement.setInt(1, id);
             statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public Sensor getLast() {
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("select * from sensors order by id desc limit 1");
-            ResultSet resultSet = statement.executeQuery();
-            Sensor sensor = null;
-            if (resultSet != null) {
-                while (resultSet.next()) {
-                    sensor = new Sensor(
-                            resultSet.getInt("id"),
-                            resultSet.getInt("sensor_type_id"),
-                            resultSet.getBoolean("id_enabled"),
-                            resultSet.getDate("installation_date")
-                    );
-                }
-            }
-            return sensor;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

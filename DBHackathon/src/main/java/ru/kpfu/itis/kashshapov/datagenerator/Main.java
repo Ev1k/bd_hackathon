@@ -15,11 +15,8 @@ public class Main {
     public static void main(String[] args) {
 
         Sensor motionSensor = new Sensor(1, true, Date.valueOf(LocalDate.now()));
-        sensorRepository.add(motionSensor);
         Sensor motionSensorWithId = sensorRepository.getLast();
         SensorStateGenerator.generateData(motionSensorWithId.getId());
-
-
 
         Sensor waterLeakSensor = new Sensor(2, true, Date.valueOf(LocalDate.now()));
         Sensor windowSensor = new Sensor(3, true, Date.valueOf(LocalDate.now()));

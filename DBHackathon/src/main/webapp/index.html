@@ -3,9 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <title>Sensors</title>
-    <script rel="http://code.jquery.com/jquery-latest.min.js"></script>
+    <style>
+        #data {
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
 </head>
 <body>
+<div id="data"></div>
 
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script>
+    function updateData() {
+        $.get("/info", function(response) {
+            let array = JSON.parse(response);
+            console.log(1);
+            for (let i = 0; i < array.length; i++){
+                document.getElementById("data").appendChild(document.createTextNode(array[i]));
+            }
+        });
+    }
+    setInterval(updateData, 1000);
+    updateData();
+</script>
 </body>
 </html>
