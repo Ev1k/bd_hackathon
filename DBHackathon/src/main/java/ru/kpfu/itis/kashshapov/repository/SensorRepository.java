@@ -90,4 +90,25 @@ public class SensorRepository implements Repository<Sensor> {
             throw new RuntimeException(e);
         }
     }
+
+    public Sensor getLast() {
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("select * from sensors order by id desc limit 1");
+            ResultSet resultSet = statement.executeQuery();
+            Sensor sensor = null;
+            if (resultSet != null) {
+                while (resultSet.next()) {
+                    sensor = new Sensor(
+                            resultSet.getInt("id"),
+                            resultSet.getInt("sensor_type_id"),
+                            resultSet.getBoolean("id_enabled"),
+                            resultSet.getDate("installation_date")
+                    );
+                }
+            }
+            return sensor;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

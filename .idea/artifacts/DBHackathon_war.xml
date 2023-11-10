@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="DBHackathon:war">
+    <output-path>$PROJECT_DIR$/DBHackathon/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>DBHackathon</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="DBHackathon-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="DBHackathon:war exploded" />
+    </root>
+  </artifact>
+</component>
