@@ -1,0 +1,6 @@
+CREATE TABLE sensor_state (
+    id SERIAL PRIMARY KEY,
+    sensor_id INTEGER REFERENCES sensors(id) ON DELETE CASCADE,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    value VARCHAR(255) NOT NULL
+);
