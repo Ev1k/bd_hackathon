@@ -6,6 +6,6 @@ public interface Repository<T> {
     T get(Integer id);
     List<T> getAll();
     void add(T model);
-    void update(Integer id);
+    void update(T model);
     void delete(Integer id);
 }
