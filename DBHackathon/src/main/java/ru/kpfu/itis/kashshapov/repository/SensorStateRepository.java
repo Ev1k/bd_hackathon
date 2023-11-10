@@ -1,6 +1,7 @@
 package ru.kpfu.itis.kashshapov.repository;
 
 import ru.kpfu.itis.kashshapov.entity.Sensor;
+import ru.kpfu.itis.kashshapov.entity.SensorState;
 import ru.kpfu.itis.kashshapov.util.DatabaseConnection;
 
 import java.sql.Connection;
@@ -10,21 +11,21 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SensorRepository implements Repository<Sensor> {
+public class SensorStateRepository implements Repository<SensorState> {
     @Override
-    public Sensor get(Integer id) {
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("select * from sensors where id=?");
+    public SensorState get(Integer id) {
+        try(Connection connection = DatabaseConnection.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("select * from sensor_state where id=?");
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
-            Sensor sensor = null;
+            SensorState sensor = null;
             if (resultSet != null) {
                 resultSet.next();
-                sensor = new Sensor(
+                sensor = new SensorState(
                         resultSet.getInt("id"),
-                        resultSet.getInt("sensor_type_id"),
-                        resultSet.getBoolean("id_enabled"),
-                        resultSet.getDate("installation_date")
+                        resultSet.getInt("sensor_id"),
+                        resultSet.getTimestamp("timestamp"),
+                        resultSet.getString("value")
                 );
             }
             return sensor;
@@ -34,18 +35,18 @@ public class SensorRepository implements Repository<Sensor> {
     }
 
     @Override
-    public List<Sensor> getAll() {
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("select * from sensors");
+    public List<SensorState> getAll() {
+        try(Connection connection = DatabaseConnection.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("select * from sensor_state");
             ResultSet resultSet = statement.executeQuery();
-            List<Sensor> sensors = new ArrayList<>();
+            List<SensorState> sensors = new ArrayList<>();
             if (resultSet != null) {
-                while (resultSet.next()) {
-                    sensors.add(new Sensor(
+                while(resultSet.next()) {
+                    sensors.add(new SensorState(
                             resultSet.getInt("id"),
-                            resultSet.getInt("sensor_type_id"),
-                            resultSet.getBoolean("id_enabled"),
-                            resultSet.getDate("installation_date")
+                            resultSet.getInt("sensor_id"),
+                            resultSet.getTimestamp("timestamp"),
+                            resultSet.getString("value")
                     ));
                 }
             }
@@ -56,12 +57,12 @@ public class SensorRepository implements Repository<Sensor> {
     }
 
     @Override
-    public void add(Sensor model) {
+    public void add(SensorState model) {
         try (Connection connection = DatabaseConnection.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("insert into sensors (sensor_type_id, is_enabled, installation_date) values (?, ?, ?)");
-            statement.setInt(1, model.getSensorTypeId());
-            statement.setBoolean(2, model.getEnabled());
-            statement.setDate(3, model.getInstallationDate());
+            PreparedStatement statement = connection.prepareStatement("insert into sensor_state (sensor_id, timestamp, value) values  (?, ?, ?)");
+            statement.setInt(1, model.getSensorId());
+            statement.setTimestamp(2, model.getTimestamp());
+            statement.setString(3, model.getValue());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -69,10 +70,10 @@ public class SensorRepository implements Repository<Sensor> {
     }
 
     @Override
-    public void update(Sensor model) {
+    public void update(SensorState model) {
         try (Connection connection = DatabaseConnection.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("update sensors set is_enabled=? where id=?");
-            statement.setBoolean(1, model.getEnabled());
+            PreparedStatement statement = connection.prepareStatement("update sensor_state set value=? where id=?");
+            statement.setString(1, model.getValue());
             statement.setInt(2, model.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -83,7 +84,7 @@ public class SensorRepository implements Repository<Sensor> {
     @Override
     public void delete(Integer id) {
         try (Connection connection = DatabaseConnection.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("delete from sensors where id=?");
+            PreparedStatement statement = connection.prepareStatement("delete from sensor_state where id=?");
             statement.setInt(1, id);
             statement.executeUpdate();
         } catch (SQLException e) {
